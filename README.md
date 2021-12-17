@@ -2,6 +2,20 @@
 
 OB Link bank account flow
 
+## Table Of Content
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [Assets And Multiple Languages](#assets-and-multiple-languages)
+- [API Reference](#api-reference)
+  - [AccountLinkingService](#accountlinkingservice)
+  - [AccountLinkingContext](#accountlinkingcontext)
+  - [SelectBankComponent](#selectbankcomponent)
+  - [BankLoginComponent](#banklogincomponent)
+  - [ConsentComponent](#consentcomponent)
+  - [LinkBankComponent](#linkbankcomponent)
+
 ## Features
 
 - Search and select bank
@@ -14,10 +28,10 @@ OB Link bank account flow
 Open a Terminal in your project's folder and run the command
 
 ```sh
-yarn add https://gitpkg.now.sh/101digital/react-native-banking-components/packages/account-linking-component
+yarn add https://github.com/101digital/account-linking-component.git
 ```
 
-- Installed [@banking-component/core](/packages/core)
+- Installed [@banking-component/core](https://github.com/101digital/banking-component-core.git)
 - Installed [react-native-theme-component](https://github.com/101digital/react-native-theme-component.git)
 - Installed [react-native-webview](https://github.com/react-native-webview/react-native-webview)
 
@@ -44,9 +58,7 @@ import { AccountLinkingProvider } from '@banking-component/transaction-component
 const App = () => {
   return (
     <View>
-      <AccountLinkingProvider>
-        {/* YOUR APP COMPONENTS */}
-      </AccountLinkingProvider>
+      <AccountLinkingProvider>{/* YOUR APP COMPONENTS */}</AccountLinkingProvider>
     </View>
   );
 };
@@ -155,7 +167,7 @@ const SelectBankScreen = ({ navigation }: SelectBankScreenProps) => {
         SearchBar={{
           components: {
             leftIcon: (
-              <Box marginRight="s" marginLeft="sm">
+              <Box marginRight='s' marginLeft='sm'>
                 <SearchSvg width={15} height={15} />
               </Box>
             ),
@@ -163,8 +175,7 @@ const SelectBankScreen = ({ navigation }: SelectBankScreenProps) => {
         }}
         BankItem={{
           props: {
-            onPressedBank: (bank) =>
-              navigation.navigate(Route.CONSENT, { bank }),
+            onPressedBank: (bank) => navigation.navigate(Route.CONSENT, { bank }),
           },
         }}
       />
@@ -191,10 +202,7 @@ Login bank and get consent code
 - Example
 
 ```javascript
-import {
-  BankLoginComponent,
-  AccountLinkingContext,
-} from '@banking-component/account-linking';
+import { BankLoginComponent, AccountLinkingContext } from '@banking-component/account-linking';
 import { Bank } from '@banking-component/core';
 import { AlertModal } from 'react-native-theme-component';
 
@@ -221,7 +229,7 @@ const BankLoginScreen = ({ route, navigation }: BankLoginScreenProps) => {
       <AlertModal
         isVisible={!isEmpty(errorLoadConsent?.toString())}
         title={i18n.t('common.lbl_oop')}
-        leftIcon={<FailedSvg width={18} height={18} fill="red" />}
+        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
         onClose={clearBankErrors}
         onConfirmed={clearBankErrors}
         message={errorLoadConsent?.toString()}
@@ -229,7 +237,7 @@ const BankLoginScreen = ({ route, navigation }: BankLoginScreenProps) => {
       <AlertModal
         isVisible={!isEmpty(errorConfirmConsent?.toString())}
         title={i18n.t('common.lbl_oop')}
-        leftIcon={<FailedSvg width={18} height={18} fill="red" />}
+        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
         onClose={clearBankErrors}
         onConfirmed={clearBankErrors}
         message={errorConfirmConsent?.toString()}
@@ -300,10 +308,7 @@ Select an account and link
 
 ```javascript
 import { AlertModal } from 'react-native-theme-component';
-import {
-  AccountLinkingContext,
-  LinkBankComponent,
-} from '@banking-component/account-linking';
+import { AccountLinkingContext, LinkBankComponent } from '@banking-component/account-linking';
 import { Bank } from '@banking-component/core';
 import { WalletContext } from '@banking-component/wallet-component';
 
@@ -312,15 +317,10 @@ export type LinkBankAccountScreenParams = {
   consentId: string,
 };
 
-const LinkBankAccountScreen = ({
-  route,
-  navigation,
-}: LinkBankAccountScreenProps) => {
+const LinkBankAccountScreen = ({ route, navigation }: LinkBankAccountScreenProps) => {
   const { bank, consentId } = route.params;
   const { isLinkingWallet, linkWallet } = useContext(WalletContext);
-  const { errorLoadAccounts, clearBankErrors } = useContext(
-    AccountLinkingContext
-  );
+  const { errorLoadAccounts, clearBankErrors } = useContext(AccountLinkingContext);
 
   useEffect(() => {
     Keyboard.dismiss();
@@ -349,7 +349,7 @@ const LinkBankAccountScreen = ({
         isVisible={!isEmpty(errorLoadAccounts?.toString())}
         title={i18n.t('common.lbl_oop')}
         onConfirmed={clearBankErrors}
-        leftIcon={<FailedSvg width={18} height={18} fill="red" />}
+        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
         onClose={clearBankErrors}
         message={errorLoadAccounts?.toString()}
       />
