@@ -6,13 +6,14 @@ import { BankItemComponent, SearchBarComponent } from './components';
 import { isEmpty, Bank } from '@banking-component/core';
 import { AccountLinkingContext } from '../context/account-linking-context';
 import { useKeyboard } from './components/keyboard';
+import { ThemeContext } from 'react-native-theme-component';
 
 const SelectBankComponent = (props: SelectBankComponentProps) => {
   const { Root, SearchBar, BankItem } = props;
   const styles = useMergeStyles(Root?.style);
   const { banks } = useContext(AccountLinkingContext);
   const _numColumns = Root?.props?.numberColumns ?? 2;
-  const i18n = Root?.props?.i18n;
+  const { i18n } = useContext(ThemeContext);
   const [displayBanks, setDisplayBanks] = useState<Bank[]>(banks);
 
   const keyboardHeight = useKeyboard();

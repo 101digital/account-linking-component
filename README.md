@@ -7,14 +7,16 @@ OB Link bank account flow
 - [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+  - [Init API Service](#init-api-service)
+  - [Init Component Provider](#init-component-provider)
   - [Assets And Multiple Languages](#assets-and-multiple-languages)
 - [API Reference](#api-reference)
   - [AccountLinkingService](#accountlinkingservice)
   - [AccountLinkingContext](#accountlinkingcontext)
   - [SelectBankComponent](#selectbankcomponent)
-  - [BankLoginComponent](#banklogincomponent)
-  - [ConsentComponent](#consentcomponent)
-  - [LinkBankComponent](#linkbankcomponent)
+  - [LinkAccountComponent](#linkaccountcomponent)
+  - [DataSharingListComponent](#datasharinglistcomponent)
+  - [DataSharingDetailComponent](#datasharingdetailcomponent)
 
 ## Features
 
@@ -39,6 +41,8 @@ If have any issue while installing, can see [Issue While Installing Sub-Componen
 
 ## Quick Start
 
+### Init API Service
+
 - `AccountLinkingService` is initiated should be from `App.ts`
 
 ```javascript
@@ -49,6 +53,8 @@ AccountLinkingService.instance().initClients({
   openBankAuthClient: createAuthorizedApiClient(openBankAuth), // Your Axios authorized client Open Bank Auth Url
 });
 ```
+
+### Init Component Provider
 
 - Wrapped the app with `AccountLinkingProvider`
 
@@ -68,43 +74,9 @@ export default App;
 
 ### Assets And Multiple Languages
 
-- All icons, images and texts are provided by default. You can use your custom by passing them as a props inside each component
+- All icons, images and texts are provided by default. You can use your custom by passing them as a props into each component
 
-- In order to do multiple languages, you need to pass `i18n` (`i18n` should be configurated in the app level) into `ConsentComponent`, `LinkBankComponent`, `SelectBankComponent`, as a root props. And then, you have to copy and paste all attributes of `consent_component`, `link_bank_component`, `select_bank_component` in [texts](account-linking-component-data.json) into your app locale file. You can also change text value, but DON'T change the key.
-
-- Example
-
-```javascript
-const TestScreen = () => {
-  return (
-    <View>
-      <ConsentComponent
-        Root={{
-          props: {
-            i18n: i18n,
-          },
-        }}
-      />
-      <LinkBankComponent
-        Root={{
-          props: {
-            i18n: i18n,
-          },
-        }}
-      />
-      <SelectBankComponent
-        Root={{
-          props: {
-            i18n: i18n,
-          },
-        }}
-      />
-    </View>
-  );
-};
-
-export default TestScreen;
-```
+- In order to do multiple languages, you need to configurate `i18n` for [react-native-theme-component](https://github.com/101digital/react-native-theme-component.git). And then, you have to copy and paste all fields and values in [texts](account-linking-component-data.json) into your app locale file. You can also change text value, but DON'T change the key.
 
 ## API Reference
 
@@ -118,13 +90,14 @@ List of functions:
 - `requestConsent(bankId: string)`: get consent data by bankId
 - `confirmConsent(bankId: string, accountRequestId: string, consentCode: string)`: confirm consent data after login
 - `fetchBankAccounts(consentId: string)`: fetch bank accounts by consentId
+- `getAccountConsents()`: get all account consent data which user's using
 
 ### AccountLinkingContext
 
 ```javascript
 export interface AccountLinkingContextData {
-  banks: Bank[]; // all banks
-  bankImages: BankImagesMap; // bank images with bank code
+  banks: Bank[];
+  bankImages: BankImagesMap;
   isLoadingBanks: boolean;
   errorLoadBanks?: Error;
   getBanks: () => void;
@@ -146,6 +119,10 @@ export interface AccountLinkingContextData {
   errorLoadAccounts?: Error;
   clearBankErrors: () => void;
   clearAccounts: () => void;
+  accountConsents: GroupAccountConsent[];
+  isLoadingAccountConsents: boolean;
+  errorLoadAccountConsents?: Error;
+  getAccountConsents: () => void;
 }
 ```
 
@@ -193,11 +170,11 @@ const styles = StyleSheet.create({
 export default SelectBankScreen;
 ```
 
-### BankLoginComponent
+### LinkAccountComponent
 
-Login bank and get consent code
+Confirm consent consumer data, sharing permissions and link bank account
 
-- Props, styles and component can be found [here](./src/bank-login/types.ts)
+- Props, styles and component can be found [here](./src/link-account/types.tsx)
 
 - Example
 
@@ -206,42 +183,61 @@ import { BankLoginComponent, AccountLinkingContext } from '@banking-component/ac
 import { Bank } from '@banking-component/core';
 import { AlertModal } from 'react-native-theme-component';
 
-export type BankLoginParams = {
-  bank: Bank,
+export type LinkAccountsScreenParams = {
+  bank: Bank;
 };
 
-const BankLoginScreen = ({ route, navigation }: BankLoginScreenProps) => {
+const LinkAccountsScreen = ({ navigation, route }: LinkAccountsScreenProps) => {
+  const dynamicConsent: DynamicConsent = JSON.parse(
+    remoteConfig().getString('linkAccountInstruction')
+  ); // these values get from Firebase Remote Config
   const { bank } = route.params;
-  const { errorConfirmConsent, errorLoadConsent, clearBankErrors } = useContext(
-    AccountLinkingContext
-  );
+  const linkAccountComponentRef = useRef<LinkAccountComponentRefs>();
+  const { isLinkingWallet, linkWallet, errorLinkWallet, isLinkedSuccessfully } =
+    useContext(WalletContext);
+  const {
+    errorLoadAccounts,
+    errorLoadAccountConsents,
+    errorLoadConsent,
+    errorConfirmConsent,
+    clearBankErrors,
+  } = useContext(AccountLinkingContext);
+
+  useEffect(() => {
+    if (isLinkingWallet) {
+      linkAccountComponentRef.current?.updateLinkBankStatus(LinkBankStatus.isLinking);
+    }
+  }, [isLinkingWallet]);
+
+  useEffect(() => {
+    if (errorLinkWallet) {
+      linkAccountComponentRef.current?.updateLinkBankStatus(LinkBankStatus.isFailed);
+    }
+  }, [errorLinkWallet]);
+
+  useEffect(() => {
+    if (isLinkedSuccessfully) {
+      linkAccountComponentRef.current?.updateLinkBankStatus(LinkBankStatus.isSuccess);
+    }
+  }, [isLinkedSuccessfully]);
 
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <BankLoginComponent
-          bank={bank}
-          onConfirmed={(consentId) =>
-            navigation.replace(Route.LINK_BANK_ACCOUNT, { bank, consentId })
-          }
+        <LinkAccountComponent
+          ref={linkAccountComponentRef}
+          props={{
+            bank: bank,
+            consentData: dynamicConsent,
+            appIcon: <LogoIcon size={100} />,
+            onLinkAccount: linkWallet,
+            onGoToAccount: () => {
+              navigation.navigate(Route.MY_ACCOUNTS);
+            },
+            onPressedLink: (link) => navigation.navigate(Route.DYNAMIC_WEBVIEW, { link }),
+          }}
         />
       </SafeAreaView>
-      <AlertModal
-        isVisible={!isEmpty(errorLoadConsent?.toString())}
-        title={i18n.t('common.lbl_oop')}
-        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
-        onClose={clearBankErrors}
-        onConfirmed={clearBankErrors}
-        message={errorLoadConsent?.toString()}
-      />
-      <AlertModal
-        isVisible={!isEmpty(errorConfirmConsent?.toString())}
-        title={i18n.t('common.lbl_oop')}
-        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
-        onClose={clearBankErrors}
-        onConfirmed={clearBankErrors}
-        message={errorConfirmConsent?.toString()}
-      />
     </>
   );
 };
@@ -251,38 +247,86 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  header: {
+    borderBottomWidth: 0,
+    shadowOpacity: 0,
+  },
 });
 
-export default BankLoginScreen;
+export default LinkAccountsScreen;
 ```
 
-### ConsentComponent
+### DataSharingListComponent
 
-Allow permission to access bank data
+Show all consent data which user's using
 
-- Props, styles and component can be found [here](./src/consent/types.ts)
+- Props, styles and component can be found [here](./src/consent-manager/types.tsx)
 
 - Example
 
 ```javascript
-import { ConsentComponent } from '@banking-component/account-linking';
-import { Bank } from '@banking-component/core';
-
-export type ConsentScreenParams = {
-  bank: Bank,
+const SharingDataListScreen = ({ navigation }: SharingDataListScreenProps) => {
+  return (
+    <>
+      <SafeAreaView style={styles.container}>
+        <DataSharingListComponent
+          onItemPressed={(item) => {
+            navigation.navigate(Route.SHARING_DATA_DETAIL, { accountConsent: item });
+          }}
+        />
+      </SafeAreaView>
+    </>
+  );
 };
 
-const ConsentScreen = ({ navigation, route }: ConsentScreenProps) => {
-  const { bank } = route.params;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.paleGreyTwo,
+  },
+});
+
+export default SharingDataListScreen;
+```
+
+### DataSharingDetailComponent
+
+Show individual consent details and can cancel sharing
+
+- Props, styles and component can be found [here](./src/consent-manager/types.tsx)
+
+- Example
+
+```javascript
+export type SharingDataDetailParams = {
+  accountConsent: AccountConsent;
+};
+
+const SharingDataDetailsScreen = ({ navigation, route }: SharingDataDetailScreenProps) => {
+  const { accountConsent } = route.params;
+  const { wallets } = useContext(WalletContext);
+  const [bankWallets, setBankWallets] = useState<Wallet[]>([]);
+  const _dateFormat = 'DD MMM YYYY';
+  const dynamicConsent: DynamicConsent = JSON.parse(
+    remoteConfig().getString('linkAccountInstruction')
+  );
+
+  useEffect(() => {
+    getWalletByBank();
+  }, [wallets, accountConsent]);
+
+  const getWalletByBank = () => {
+    setBankWallets(wallets.filter((w) => w.bankAccount.bankCode === accountConsent.aspspInfo.id));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ConsentComponent
-        Root={{
-          props: {
-            bank: bank,
-            onContinue: () => navigation.navigate(Route.BANK_LOGIN, { bank }),
-          },
-        }}
+      <DataSharingDetailComponent
+        accountConsent={accountConsent}
+        wallets={bankWallets}
+        periodFormat={_dateFormat}
+        consentData={dynamicConsent}
+        onPressedLink={(link) => navigation.navigate(Route.DYNAMIC_WEBVIEW, { link })}
       />
     </SafeAreaView>
   );
@@ -295,74 +339,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConsentScreen;
-```
-
-### LinkBankComponent
-
-Select an account and link
-
-- Props, styles and component can be found [here](./src/link-bank/types.ts)
-
-- Example
-
-```javascript
-import { AlertModal } from 'react-native-theme-component';
-import { AccountLinkingContext, LinkBankComponent } from '@banking-component/account-linking';
-import { Bank } from '@banking-component/core';
-import { WalletContext } from '@banking-component/wallet-component';
-
-export type LinkBankAccountScreenParams = {
-  bank: Bank,
-  consentId: string,
-};
-
-const LinkBankAccountScreen = ({ route, navigation }: LinkBankAccountScreenProps) => {
-  const { bank, consentId } = route.params;
-  const { isLinkingWallet, linkWallet } = useContext(WalletContext);
-  const { errorLoadAccounts, clearBankErrors } = useContext(AccountLinkingContext);
-
-  useEffect(() => {
-    Keyboard.dismiss();
-  }, [consentId]);
-
-  useEffect(() => {
-    if (isLinkingWallet) {
-      navigation.navigate(Route.ACCOUNTS_TAB); // navigate back to account scrren
-    }
-  }, [isLinkingWallet]);
-
-  return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <LinkBankComponent
-          Root={{
-            props: {
-              bank: bank,
-              consentId: consentId,
-              onLinkAccount: linkWallet,
-            },
-          }}
-        />
-      </SafeAreaView>
-      <AlertModal
-        isVisible={!isEmpty(errorLoadAccounts?.toString())}
-        title={i18n.t('common.lbl_oop')}
-        onConfirmed={clearBankErrors}
-        leftIcon={<FailedSvg width={18} height={18} fill='red' />}
-        onClose={clearBankErrors}
-        message={errorLoadAccounts?.toString()}
-      />
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-});
-
-export default LinkBankAccountScreen;
+export default SharingDataDetailsScreen;
 ```

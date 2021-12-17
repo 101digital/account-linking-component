@@ -678,8 +678,8 @@
     to-fast-properties "^2.0.0"
 
 "@banking-component/core@https://github.com/101digital/banking-component-core.git":
-  version "1.1.14"
-  resolved "https://github.com/101digital/banking-component-core.git#bbf113bbffb138502b6a2608300f93a353059c90"
+  version "1.1.15"
+  resolved "https://github.com/101digital/banking-component-core.git#03350e7c891d5c044a2329ccef4ae9d518e2adf3"
   dependencies:
     lodash "^4.17.21"
 

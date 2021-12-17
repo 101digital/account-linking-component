@@ -6,7 +6,6 @@ export type SelectBankComponentProps = {
   Root?: {
     style?: SelectBankComponentStyles;
     props?: {
-      i18n?: any;
       headingLabel?: string;
       numberColumns?: number;
       onViewGuide?: () => void
