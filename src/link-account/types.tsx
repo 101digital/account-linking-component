@@ -31,7 +31,7 @@ export type LinkAccountComponentProps = {
   props: {
     bank: Bank;
     onStepChanged?: (step: ProgressStep) => void;
-    consentData: DynamicConsent;
+    consentData?: DynamicConsent;
     appIcon: ReactNode;
     onLinkAccount: (bankId: string, consentId: string, accountIds: string[]) => void;
     onGoToAccount: () => void;

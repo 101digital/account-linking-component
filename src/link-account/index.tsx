@@ -56,6 +56,78 @@ const LinkAccountComponent = forwardRef((componentsProps: LinkAccountComponentPr
   const { i18n, colors } = useContext(ThemeContext);
   const { getConsent } = useContext(AccountLinkingContext);
 
+  const _consentData =
+    consentData ??
+    JSON.parse(
+      JSON.stringify(`{
+    "companyName": "101 Digital PTE Limited",
+    "guideLinkAccountLink": "https://www.101digital.io",
+    "cdrPolicyLink": "https://www.101digital.io",
+    "consentPeriods": [
+      {
+        "period": 3,
+        "type": "month"
+      },
+      {
+        "period": 6,
+        "type": "month"
+      },
+      {
+        "period": 12,
+        "type": "month"
+      }
+    ],
+    "consentSummaries": [
+      {
+        "id": "key_ìnformation",
+        "summaryTitle": "Key information",
+        "summaryMessage": "The follwing is the summary of your consent along with our data management practices.",
+        "items": [
+          {
+            "id": "sharing_period",
+            "title": "Sharing period"
+          },
+          {
+            "id": "access_frequency",
+            "title": "How often we’ll access your data?",
+            "message": "We will do this multiple times daily to retrieve your data to give you up to date inforamtion. We will do this only  during the Sharing Period."
+          }
+        ]
+      },
+      {
+        "id": "stop_sharing",
+        "summaryTitle": "What happen to your data after you stop sharing with us?",
+        "summaryMessage": "We will delete your CDR data when the consent expires or when you decide to stop sharing data with us unless it is required to be retained by Australian Law.",
+        "directUrl": {
+          "title": "See how we delete your data",
+          "link": "https://www.101digital.io"
+        }
+      },
+      {
+        "id": "managing_data",
+        "summaryTitle": "Managing your data",
+        "items": [
+          {
+            "id": "manage_agreement",
+            "title": "Where to manage this agreement",
+            "message": "All of this information will be made available on your Data Sharing dashboard. You can access it by going to Settings -> Data Sharing."
+          },
+          {
+            "id": "stop_sharing",
+            "title": "If you want to stop sharing this data",
+            "message": "You can stop us collecting and using your datta on your Data Sharing dashboard or by writing to cdr_au@101digital.io."
+          }
+        ]
+      },
+      {
+        "id": "confirm_consent",
+        "summaryTitle": "Do you consent to share this data with us?",
+        "summaryMessage": "Selecting “I consent” won’t gove us access to your data just yet. We will need to connect with your bank to confirm this decision. "
+      }
+    ]
+  }`)
+    );
+
   const [steps, setSteps] = useState<Step[]>(
     stepperComponent?.steps ?? [
       {
@@ -159,7 +231,7 @@ const LinkAccountComponent = forwardRef((componentsProps: LinkAccountComponentPr
             setActiveStep(ProgressStep.accessiblePeriod);
           }}
           onCDRPolicyPressed={() => {
-            onPressedLink(consentData.cdrPolicyLink);
+            onPressedLink(_consentData.cdrPolicyLink);
           }}
           {...consumerDataComponent}
         />
@@ -167,9 +239,9 @@ const LinkAccountComponent = forwardRef((componentsProps: LinkAccountComponentPr
       {activeStep === ProgressStep.accessiblePeriod && (
         <>
           <PeriodSelectionComponent
-            periods={consentData.consentPeriods}
+            periods={_consentData.consentPeriods}
             recipientId={bank.accreditedDataRecipientId ?? ''}
-            companyName={consentData.companyName}
+            companyName={_consentData.companyName}
             initialPeriod={period}
             onNext={(value) => {
               setPeriod(value);
@@ -213,7 +285,7 @@ const LinkAccountComponent = forwardRef((componentsProps: LinkAccountComponentPr
             }
           )}
           <ConsentSummaryComponent
-            summaries={consentData.consentSummaries}
+            summaries={_consentData.consentSummaries}
             period={period}
             onConsented={() => setActiveStep(ProgressStep.confirmLogin)}
             onPressedLink={onPressedLink}
@@ -247,7 +319,7 @@ const LinkAccountComponent = forwardRef((componentsProps: LinkAccountComponentPr
         <SelectAccountComponent
           bank={bank}
           consentId={consentId}
-          companyName={consentData.companyName}
+          companyName={_consentData.companyName}
           onLinkAccount={onLinkAccount}
           {...selectAccountComponent}
         />
