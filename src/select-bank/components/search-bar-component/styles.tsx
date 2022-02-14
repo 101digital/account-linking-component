@@ -18,7 +18,8 @@ const useMergeStyles = (style?: SearchBarComponentStyles) => {
     textInputStyle: {
       flex: 1,
       fontFamily: fonts.regular,
-      fontSize: 14,
+      fontSize: 12,
+      lineHeight: 18,
       color: '#3C3E4F',
       paddingTop: 0,
       paddingBottom: 0,

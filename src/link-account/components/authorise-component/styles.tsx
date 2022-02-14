@@ -13,12 +13,12 @@ const useMergeStyles = (style?: AuthoriseComponentStyles): AuthoriseComponentSty
     },
     mainContainerStyle: {
       flex: 1,
-      paddingHorizontal: 25,
+      paddingHorizontal: 27,
     },
     bankContainerStyle: {
       flexDirection: 'row',
-      marginTop: 60,
-      marginBottom: 40,
+      marginTop: 52,
+      marginBottom: 38,
       alignItems: 'center',
     },
     bankItemContainerStyle: {
@@ -59,7 +59,7 @@ const useMergeStyles = (style?: AuthoriseComponentStyles): AuthoriseComponentSty
       fontSize: 12,
       color: '#244065',
       lineHeight: 18,
-      marginVertical: 28,
+      marginVertical: 40,
       marginHorizontal: 20,
       textAlign: 'center',
     },

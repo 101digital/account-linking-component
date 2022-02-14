@@ -26,9 +26,10 @@ const useMergeStyle = (style?: ConfirmLinkingComponentStyles): ConfirmLinkingCom
       textAlign: 'center',
     },
     statusIconContainerStyle: {
-      width: 100,
-      height: 100,
-      marginVertical: 45,
+      width: 91,
+      height: 91,
+      marginTop: 46,
+      marginBottom: 53,
     },
     subTitleTextStyle: {
       fontFamily: fonts.medium,

@@ -2,12 +2,9 @@ import { CalendarIcon, CDRIcon } from '../../../assets/images';
 import React, { useContext, useState } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, ThemeContext } from 'react-native-theme-component';
-import {
-  ConsentPeriod,
-  PeriodSelectionComponentProps,
-  PeriodSelectionComponentStyles,
-} from '../../types';
+import { PeriodSelectionComponentProps, PeriodSelectionComponentStyles } from '../../types';
 import useMergeStyles from './styles';
+import { ConsentPeriod } from '../../../types';
 
 const { width } = Dimensions.get('window');
 

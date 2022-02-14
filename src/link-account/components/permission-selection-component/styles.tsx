@@ -19,18 +19,19 @@ const useMergeStyles = (
       fontWeight: '600',
       color: '#0D2050',
       paddingHorizontal: 16,
-      marginTop: 28,
+      marginTop: 17,
       marginBottom: 10,
     },
     headerMessageStyle: {
-      paddingHorizontal: 16,
+      paddingHorizontal: 17,
       fontFamily: fonts.regular,
       fontSize: 12,
       color: '#244065',
+      lineHeight: 18,
     },
     permissionListStyle: {
       paddingHorizontal: 23,
-      marginVertical: 15,
+      marginTop: 20,
       flex: 1,
     },
     separatorStyle: {

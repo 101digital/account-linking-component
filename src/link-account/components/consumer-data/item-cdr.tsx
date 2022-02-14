@@ -40,7 +40,7 @@ const useMergeStyle = (style?: ItemCDRStyles): ItemCDRStyles => {
       fontWeight: '600',
       fontSize: 14,
       color: '#0D2050',
-      lineHeight: 21,
+      lineHeight: 25,
     },
     descriptionTextStyle: {
       fontSize: 12,

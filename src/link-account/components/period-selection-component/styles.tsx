@@ -17,7 +17,7 @@ const useMergeStyles = (style?: PeriodSelectionComponentStyles): PeriodSelection
       color: '#0D2050',
       paddingHorizontal: 16,
       marginTop: 28,
-      marginBottom: 20,
+      marginBottom: 18,
     },
     companyContainerStyle: {
       marginHorizontal: 22,

@@ -17,18 +17,19 @@ const useMergeStyles = (style?: SelectBankComponentStyles) => {
       fontSize: 14,
       fontFamily: fonts.regular,
       color: '#0D2050',
-      paddingTop: 30,
-      paddingBottom: 28,
+      paddingTop: 29,
+      paddingBottom: 20,
       lineHeight: 21,
     },
     columWrapperStyle: {
       justifyContent: 'space-between',
     },
     listDivider: {
-      height: 20,
+      height: 21,
     },
     listStyle: {
-      marginVertical: 15,
+      marginTop: 29,
+      marginBottom: 32,
     },
     linkAccountTextStyle: {
       fontFamily: fonts.regular,

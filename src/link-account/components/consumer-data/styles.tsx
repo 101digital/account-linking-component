@@ -1,8 +1,8 @@
 import { defaultsDeep } from '@banking-component/core';
+import { ComsumerDataComponentStyles } from '../../types';
 import { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { ThemeContext } from 'react-native-theme-component';
-import { ComsumerDataComponentStyles } from './types';
 
 const useMergeStyle = (style?: ComsumerDataComponentStyles): ComsumerDataComponentStyles => {
   const { fonts, colors } = useContext(ThemeContext);
@@ -31,10 +31,10 @@ const useMergeStyle = (style?: ComsumerDataComponentStyles): ComsumerDataCompone
       fontWeight: '600',
     },
     buttonCDRPolicyStyle: {
-      marginBottom: 20,
+      marginBottom: 19,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingVertical: 5,
+      paddingVertical: 7,
     },
     cdrPolicyTextStyle: {
       fontFamily: fonts.regular,
@@ -48,7 +48,7 @@ const useMergeStyle = (style?: ComsumerDataComponentStyles): ComsumerDataCompone
     placeholderContainerStyle: {
       flexDirection: 'row',
       marginHorizontal: '25%',
-      marginVertical: 10,
+      marginVertical: 17,
     },
     connectorContainerStyle: {
       width: 45,
@@ -59,7 +59,7 @@ const useMergeStyle = (style?: ComsumerDataComponentStyles): ComsumerDataCompone
       elevation: 4,
       shadowOffset: { width: 0, height: 0 },
       shadowColor: 'grey',
-      shadowOpacity: 0.2,
+      shadowOpacity: 0.15,
       shadowRadius: 3,
       backgroundColor: 'white',
       justifyContent: 'center',

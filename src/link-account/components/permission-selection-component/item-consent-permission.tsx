@@ -76,7 +76,7 @@ const ItemConsentPermission = (props: ItemConsentPermissionProps) => {
             ul: {
               margin: 0,
               marginBottom: 15,
-              marginLeft: 10,
+              marginHorizontal: 10,
             },
             li: {
               fontFamily: fonts.regular,
@@ -88,6 +88,7 @@ const ItemConsentPermission = (props: ItemConsentPermissionProps) => {
               margin: 2,
               fontSize: 12,
               color: '#244065',
+              marginHorizontal: 15,
             },
           }}
         />
@@ -111,7 +112,6 @@ const useMergeStyles = (style?: ItemConsentPermissionStyles): ItemConsentPermiss
       borderWidth: 1,
       borderColor: '#E1E1E1',
     },
-
     permissionTitleStyle: {
       fontFamily: fonts.regular,
       fontWeight: '600',
@@ -124,7 +124,7 @@ const useMergeStyles = (style?: ItemConsentPermissionStyles): ItemConsentPermiss
       borderBottomColor: 'rgba(191, 191, 191, 0.3)',
       alignItems: 'center',
       paddingHorizontal: 15,
-      paddingVertical: 8,
+      paddingVertical: 5,
     },
     buttonViewFullStyle: {
       paddingHorizontal: 15,

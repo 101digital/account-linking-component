@@ -9,7 +9,6 @@ const useMergeStyles = (style?: ConsentSummaryComponentStyles): ConsentSummaryCo
   const defaultStyles: ConsentSummaryComponentStyles = StyleSheet.create({
     containerStyle: {
       flex: 1,
-      paddingVertical: 5,
     },
     contentContainerStyle: {
       flex: 1,
@@ -32,7 +31,7 @@ const useMergeStyles = (style?: ConsentSummaryComponentStyles): ConsentSummaryCo
     },
     itemContainerStyle: {
       paddingHorizontal: 15,
-      paddingVertical: 20,
+      paddingVertical: 17,
     },
     directLinkTextStyle: {
       color: colors.primaryColor,

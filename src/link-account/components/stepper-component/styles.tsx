@@ -16,7 +16,7 @@ const useMergeStyles = (style?: StepperComponentStyles): StepperComponentStyles 
       shadowRadius: 5,
       elevation: 3,
       zIndex: 10,
-      paddingVertical: 10,
+      paddingVertical: 18,
     },
     contentContainerStyle: {
       flexDirection: 'row',
